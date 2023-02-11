@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+	<title>Abhijeet | Login</title>
+</head>
+<body>
+	Negi11$Abhijeet
+  <div class="form-wrap">
+		<div class="tabs">
+      <h3 class="signup-tab"><a href="{% url 'signup' %}">Sign Up</a></h3>
+      <h3 class="login-tab"><a class="active" href="{% url 'login' %}">Login</a></h3>
+		</div><!--.tabs-->
+
+		<div class="tabs-content">
+			<div id="login-tab-content" class="active">
+				<form class="login-form" action="" method="POST">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+              {{error}}
+            {% endfor %}
+          {% endif %}
+          {% for fm in form %}
+            {{fm}}{{fm.errors}}
+          {% endfor %}
+
+          
+					<!-- <input type="text" class="input" name="user_email" autocomplete="off" placeholder="Email or Username"> -->
+					<!-- <input type="password" class="input" name="user_pass" autocomplete="off" placeholder="Password"> -->
+					<div>
+            <input type="checkbox" class="checkbox" id="remember_me">
+            <label for="remember_me">Remember me</label>
+          </div>
+					<input type="submit" class="button" value="Login">
+				</form><!--.login-form-->
+				<div class="help-text">
+					{% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
+				</div><!--.help-text-->
+			</div><!--.login-tab-content-->
+		</div><!--.tabs-content-->
+	</div><!--.form-wrap-->
+
+</body>
+</html>

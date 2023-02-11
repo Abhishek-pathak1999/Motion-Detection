@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+	<title>Abhijeet | Login</title>
+</head>
+<body>
+  Negi11$Abhijeet
+ <div class="form-wrap">
+  <div class="tabs">
+    <h3 class="signup-tab"><a class="active" href="{% url 'signup' %}">Sign Up</a></h3>
+    <h3 class="login-tab"><a href="{% url 'login' %}">Login</a></h3>
+  </div><!--.tabs-->
+
+  <div class="tabs-content">
+    <div id="signup-tab-content" class="active">
+      <form class="signup-form" action="" method="POST" novalidate>
+        {% csrf_token %}
+        {% for fm in form %}
+          {{fm}}{{fm.errors}}
+        {% endfor %}
+        <!-- <input type="text" class="input" name="user_name" autocomplete="off" placeholder="Username">
+        <input type="email" class="input" name="user_email" autocomplete="off" placeholder="Email">
+        <input type="number" class="input" name="user_number" autocomplete="off" placeholder="Phone">
+        <input type="password" class="input" name="user_pass" autocomplete="off" placeholder="Password"> -->
+        <input type="submit" class="button" value="Sign Up">
+      </form><!--.login-form-->
+      <div class="help-text">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+       
+      </div><!--.help-text-->
+    </div><!--.signup-tab-content-->
+
+  </div><!--.tabs-content-->
+</div><!--.form-wrap-->
+</body>
+</html>

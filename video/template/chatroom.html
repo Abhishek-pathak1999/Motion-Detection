@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/icons.min.css' %}">
+	<title>{{user}}|Chatroom</title>
+</head>
+<style>
+  *{
+    margin: 0;
+    padding: 0; 
+}
+
+nav{
+    background-color: rgb(224, 204, 114);
+    color: rgb(224, 41, 41);
+    height: 50px;
+    align-items: center;
+    display: flex;
+    font-size: 25px;
+    font-weight: 1000;
+    padding: 12px;
+}
+
+
+
+nav ul{
+    list-style-type: none;
+   
+}
+
+.gameContainer{
+    
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+
+}
+
+.container{
+    display: grid;
+    grid-template-rows: repeat(3, 10vw);
+    grid-template-columns: repeat(3,10vw);
+    position: relative;
+    
+
+}
+.box{
+    border: 2px solid black ;
+    font-size: 8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.not_allowed{
+    cursor: not-allowed;
+}
+.box:hover{
+    background-color: rgb(233, 176, 216);
+}
+
+.info{
+    font-size: 25px;
+
+}
+
+.gameInfo{
+    padding: 0 34px;
+    font-family: 'Poppins', sans-serif; 
+}
+
+.imgbox img{
+    width: 0;
+    transition: width is ease-in-out;
+}
+
+.abc{
+    margin: 25px;
+}
+
+.box.br-0{
+    border-right: 0px;
+    
+}
+.box.bl-0{
+    border-left: 0px;
+}
+.box.bt-0{
+    border-top: 0px;
+}
+.box.bb-0{
+    border-bottom: 0;
+}
+
+#reset{
+    margin: 0 23px;
+    padding: 5px 10px;
+    color: rgb(241, 16, 185);
+    background-color: rgb(228, 167, 207);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 1000; 
+}
+
+.line{
+    background-color: black;
+    height: 3px;
+    width: 0;
+    position: absolute;
+    background-color: #911d91;
+    transition: width 1s ease-in-out;
+}
+
+
+@media only screen and (max-width: 600px) {
+    body {
+      background-color: lightblue;
+      
+    }
+    .gameContainer{
+        flex-wrap: wrap;
+    }
+    .gameInfo h1{
+        font-size: 1.5rem;
+    }
+    .container{
+        display: grid;
+        grid-template-columns: repeat(3, 20vw);
+        grid-template-rows: repeat(3, 20vw);
+        
+    }
+  }
+</style>
+
+<body>
+  <div class="gameContainer">
+		<div class="container">
+			<div class="line"></div>
+			<div class = "ont box bt-0 bl-0"><span class=" boxtext"></span></div> 
+			<div class = "two box bt-0"><span class="boxtext"></span></div>
+			<div class = "three box bt-0 br-0"><span class="boxtext"></span></div>
+			<div class = "four box bl-0"><span class="boxtext"></span></div>
+			<div class = "five box"><span class="boxtext"></span></div>
+			<div class = "six box br-0"><span class="boxtext"></span></div>
+			<div class = "seven box bl-0 bb-0"><span class="boxtext"></span></div>
+			<div class = "eight box bb-0"><span class="boxtext"></span></div>
+			<div class = "nine box bb-0 br-0"><span class="boxtext"></span></div>
+		</div>
+		<div class="gameInfo">
+			<h1>Welcome to tic tac toe</h1>
+
+			<div class="abc">
+				<span class="info">Turn for X</span>
+				<button style="display: none;" id="reset">Reset</button>
+			</div>
+		</div>
+	</div>
+
+
+    {{ room_name|json_script:"room-name" }}
+ 
+    <div id="user" style="display: none;position: fixed; top: 10px;">{{ user }}</div>
+
+
+	<script>
+        
+        const roomname=JSON.parse(document.getElementById('room-name').textContent)
+        var boxes = document.querySelectorAll(".box");
+        const chatsocket = new WebSocket(
+            'ws://' +
+            window.location.host +
+            '/ws/' +
+            roomname +
+            '/'
+        );
+        var turn = "X"
+        var isgameover = false
+
+        var changeTurn = ()=>{
+            return turn ==="X"?"0": "X"
+        }
+
+        const checkWin = ()=>{
+            let boxtext = document.getElementsByClassName('boxtext');
+            let wins = [
+                [0,1,2,5,5,0],
+                [3,4,5,5,15,0],
+                [6,7,8,5,25,0],
+                [0,3,6,-5,15,90],
+                [1,4,7,5,15,90],
+                [2,5,8,15,15,90],
+                [0,4,8,5,15,45],
+                [2,4,6,5,15,135],
+
+            ]
+            wins.forEach(e =>{
+                console.log(boxtext[e[0]],boxtext[e[1]])
+                if((boxtext[e[0]].innerText === boxtext[e[1]].innerText) && (boxtext[e[2]].innerText===boxtext[e[1]].innerText) && (boxtext[e[0]].innerText !== "")){
+                    document.querySelector('.info').innerText = boxtext[e[0]].innerText + " Won"
+                    
+                    isgameover = true
+                    document.querySelector(".line").style.transform = `translate(${e[3]}vw, ${e[4]}vw) rotate(${e[5]}deg)`
+                    document.querySelector(".line").style.width = "20vw";
+                    const myTimeout = setTimeout(myGreeting, 2000);
+
+                    function myGreeting() {
+                        document.querySelector("#reset").click()
+                    }
+                   
+                }
+            })
+
+        }
+       
+        Array.from(boxes).forEach(element=>{
+
+            let boxtext= element.querySelector('.boxtext')
+            
+              element.addEventListener('click', (e)=>{
+
+                e.preventDefault()
+                
+                if(boxtext.innerText === ''){
+                    boxtext.innerText = turn;
+                    
+                    const msg=turn                
+                                
+                    var cl=element.classList[0]
+                    console.log(cl)
+                    turn = changeTurn();
+                    checkWin();
+                    if(! isgameover){
+                        document.getElementsByClassName("info")[0].innerText = "Turn for " + turn;
+                    }
+                    
+                    chatsocket.send(JSON.stringify({
+                        'message': msg,
+                        'class': cl
+                    }))
+                }
+            })
+        })
+        
+ 
+
+        chatsocket.onmessage=function(e){
+            e.preventDefault()
+            const data=JSON.parse(e.data);
+            const msg=data.message;
+            const classname=data.classname;   
+       
+            let boxtext= document.querySelector("."+classname+" .boxtext")
+                
+            console.log(boxtext)
+            if(boxtext.innerText === ''){
+                boxtext.innerText = turn;
+                
+
+                turn = changeTurn();
+                checkWin();
+                if(! isgameover){
+                    document.getElementsByClassName("info")[0].innerText = "Turn for " + turn;
+                }
+            }                 
+        }
+
+
+        
+            document.querySelector('#reset').addEventListener('click',()=>{
+                let boxtexts = document.querySelectorAll('.boxtext');
+                Array.from(boxtexts).forEach(element=>{
+                    element.innerText=""
+                });
+                turn = "X";
+                isgameover = false
+                document.querySelector(".line").style.width = "0vw";
+                document.getElementsByClassName("info")[0].innerText = "Turn for "+ turn;
+            })
+
+    </script>
+</body>
+</html>
+

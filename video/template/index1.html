@@ -1,0 +1,179 @@
+<html>
+    <body>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+body {
+  font-family: "Work Sans", sans-serif;
+  background: #111;
+  text-align: center;
+  font-size: 30px;
+}
+
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  /* touch-callout: none; */
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  display: inline-block;
+  border: 0.2em solid;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 0.6;
+  color: #FFF;
+}
+.button__text {
+  display: block;
+  padding: 1em 2em;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.button__text:before {
+  content: attr(title);
+}
+.button__text--bis {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(-1em);
+  opacity: 0;
+}
+.button__mask {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  transform: translateX(-100%) rotate(45deg);
+  transition: all 0.3s;
+}
+
+.button:hover {
+  opacity: 1;
+}
+.button:hover .button__text {
+  -webkit-animation: fx-text 0.3s ease-out;
+          animation: fx-text 0.3s ease-out;
+}
+.button:hover .button__text--bis {
+  -webkit-animation: fx-text-bis 0.3s ease-out;
+          animation: fx-text-bis 0.3s ease-out;
+}
+.button:hover .button__mask {
+  -webkit-animation: fx-mask 0.3s ease-out;
+          animation: fx-mask 0.3s ease-out;
+}
+
+.button:active {
+  opacity: 1;
+  background: white;
+  color: inherit;
+}
+
+@-webkit-keyframes fx-mask {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+@keyframes fx-mask {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+@-webkit-keyframes fx-text {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
+@keyframes fx-text {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes fx-text-bis {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fx-text-bis {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+        </style>
+        
+        <form class="container" method="POST" action="">
+            {% csrf_token %}
+            <input type="text" class="'from-control" name="room" id="room">
+
+            <button type="submit" class="btn" style="display: none">Submit</button>
+            <div class="wrapper">
+                <div class="button" onclick="myFunction()">
+                  <span class="button__mask"></span>
+                  <span class="button__text">Start System</span>
+                  <span class="button__text button__text--bis">Start System</span>
+                  <p style="color: white">We will send you email on any movement</p>
+                </div>                
+            </div>
+            
+        </form>
+        <script>
+            let username="{{  user }}";
+            let final_room_name = username+Math.floor((Math.random() * 9999) + 1);
+                              
+            function myFunction() {
+                if(document.querySelector("#room").value==""){
+                  document.querySelector("#room").value=final_room_name
+                }
+                
+                document.querySelector(".btn").click();
+                }
+        </script>
+    </body>
+</html>
